@@ -94,41 +94,42 @@ export class NftService {
 
   public async createTokens(transfers: any) {
     try {
-      const savedTokenAddresses: Set<string> = new Set();
-  
+      const savedTokenAddresses: Set<string> = new Set()
+
       for (const transfer of transfers) {
-        const tokenAddress = transfer.token_address;
-  
+        const tokenAddress = transfer.token_address
+
         // すでにデータベースに存在するかチェック
         const existingToken = await this.prisma.tokens.findFirst({
           where: { address: tokenAddress },
-        });
-  
+        })
+
         if (existingToken !== null) {
-          continue;
+          continue
         }
-  
+
         // すでに保存する予定のアドレスとして存在するかチェック
         if (savedTokenAddresses.has(tokenAddress)) {
-          continue;
+          continue
         }
-  
-        savedTokenAddresses.add(tokenAddress);
+
+        savedTokenAddresses.add(tokenAddress)
       }
-  
+
       // Setを配列に変換
-      const tokenAddressesToCreate = Array.from(savedTokenAddresses).map(address => ({ address }));
-  
+      const tokenAddressesToCreate = Array.from(savedTokenAddresses).map(
+        (address) => ({ address })
+      )
+
       await this.prisma.tokens.createMany({
         data: tokenAddressesToCreate,
-      });
-  
-      this.prisma.$disconnect();
-    } catch (error) {
-      console.log(error);
+      })
 
-      throw error;
+      this.prisma.$disconnect()
+    } catch (error) {
+      console.log(error)
+
+      throw error
     }
   }
-  
 }
