@@ -10,6 +10,10 @@ const port = process.env.PORT || 3000
 app.use(compression())
 app.use(express.json())
 
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
 // Schedule
 schedule.scheduleJob('* */10 * * * *', handlerSaveNftTokenAddresses)
 schedule.scheduleJob('* */20 * * * *', handlerSaveNftCollection)
