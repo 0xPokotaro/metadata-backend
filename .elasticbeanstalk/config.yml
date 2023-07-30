@@ -1,6 +1,6 @@
 branch-defaults:
   default:
-    environment: production-environment
+    environment: Metadata-production
 environment-defaults:
   production-environment:
     branch: null

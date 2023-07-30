@@ -25,7 +25,7 @@ jobs:
           pip install awsebcli
       - name: Deploy to Elastic Beanstalk
         run: |
-          eb deploy "production-server"
+          eb deploy "Metadata-production"
       - name: Success
         run: |
           echo "Success"
