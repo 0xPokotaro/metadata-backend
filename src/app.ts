@@ -5,7 +5,7 @@ import { main as handlerSaveNftTokenAddresses } from './batch/jobs/evmChain/save
 import { main as handlerSaveNftCollection } from './batch/jobs/evmChain/saveNftCollection'
 
 const app = express()
-const port = 3001
+const port = process.env.PORT || 3000
 
 app.use(compression())
 app.use(express.json())
