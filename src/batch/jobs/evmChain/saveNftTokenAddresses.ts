@@ -1,13 +1,12 @@
-import Moralis from 'moralis'
-import { EvmChain } from '@moralisweb3/common-evm-utils'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, TokenTypes } from '@prisma/client'
+import { EVM_CHAIN } from '../../../config'
+import { getNFTTransfersByBlock } from '../../../libs/morals/NftApi/getNFTTransfersByBlock'
 
-const moralisApiKey = process.env.MORALIS_API_KEY
 const prisma = new PrismaClient()
 
 const getLastProcessBlock = async () => {
   try {
-    return await prisma.lastProcessdBlocks.findFirst({
+    return await prisma.evmChainLastProcessdBlocks.findFirst({
       orderBy: {
         id: 'desc',
       },
@@ -18,32 +17,9 @@ const getLastProcessBlock = async () => {
   }
 }
 
-const getNFTTransfersByBlock = async (blockNo: number, lastCursor: string) => {
-  try {
-    if (!Moralis.Core.isStarted) {
-      await Moralis.start({
-        apiKey: moralisApiKey,
-      })
-    }
-
-    const response = await Moralis.EvmApi.nft.getNFTTransfersByBlock({
-      blockNumberOrHash: blockNo.toString(),
-      cursor: lastCursor,
-      chain: EvmChain.ETHEREUM,
-      limit: 5,
-      disableTotal: false,
-    })
-
-    return response.toJSON()
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
 export const main = async () => {
   try {
-    console.info('Start saveNftTokenAddresses')
+    console.info('[START] saveNftTokenAddresses')
 
     const lastProcessdBlock = await getLastProcessBlock()
     if (!lastProcessdBlock) {
@@ -65,8 +41,12 @@ export const main = async () => {
       const tokenAddress = transfer.token_address
 
       // すでにデータベースに存在するかチェック
-      const existingToken = await prisma.tokens.findFirst({
-        where: { address: tokenAddress },
+      const existingToken = await prisma.evmChainTokens.findFirst({
+        where: {
+          evmChainId: EVM_CHAIN.ETHEREUM.CHAIN_ID,
+          tokenType: TokenTypes.NFT,
+          address: tokenAddress,
+        },
       })
 
       if (existingToken !== null) {
@@ -82,23 +62,28 @@ export const main = async () => {
     }
 
     const tokenAddressesToCreate = Array.from(savedTokenAddresses).map(
-      (address) => ({ address })
+      (address) => ({
+        evmChainId: EVM_CHAIN.ETHEREUM.CHAIN_ID,
+        tokenType: TokenTypes.NFT,
+        address,
+      })
     )
 
-    await prisma.tokens.createMany({
+    await prisma.evmChainTokens.createMany({
       data: tokenAddressesToCreate,
     })
 
     if (transfers.cursor === null) {
       const nextBlockNo = Number(lastProcessdBlock.latestBlockNo) + 1
-      await prisma.lastProcessdBlocks.create({
+      await prisma.evmChainLastProcessdBlocks.create({
         data: {
+          evmChainId: EVM_CHAIN.ETHEREUM.CHAIN_ID,
           latestBlockNo: nextBlockNo,
           lastCursor: '',
         },
       })
     } else {
-      await prisma.lastProcessdBlocks.update({
+      await prisma.evmChainLastProcessdBlocks.update({
         where: {
           id: lastProcessdBlock.id,
         },
@@ -111,5 +96,6 @@ export const main = async () => {
     console.log(error)
   } finally {
     await prisma.$disconnect()
+    console.info('[END] saveNftTokenAddresses')
   }
 }

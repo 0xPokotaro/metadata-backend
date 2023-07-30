@@ -10,17 +10,55 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model LastProcessdBlocks {
-  id            Int      @id @default(autoincrement())
-  latestBlockNo Int @db.UnsignedInt
-  lastCursor    String @db.VarChar(296)
+model EvmChains {
+  id           Int      @id @db.UnsignedInt @default(autoincrement())
+  name         String   @db.VarChar(255) @unique
+  chainId      Int      @db.UnsignedInt @unique
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  EvmChainLastProcessdBlocks EvmChainLastProcessdBlocks[]
+  EvmChainTokens             EvmChainTokens[]
 }
 
-model Tokens {
-  id            Int      @id @default(autoincrement())
-  address       String   @db.VarChar(42) @unique
+model EvmChainLastProcessdBlocks {
+  id            Int      @id @db.UnsignedInt @default(autoincrement())
+  evmChainId    Int      @db.UnsignedInt
+  evmChains     EvmChains @relation(fields: [evmChainId], references: [id])
+  latestBlockNo Int      @db.UnsignedInt
+  lastCursor    String   @db.VarChar(296)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+enum TokenTypes {
+  FT
+  NFT
+  OTHER
+}
+
+model EvmChainTokens {
+  id            Int      @id @db.UnsignedInt @default(autoincrement())
+  evmChainId    Int      @db.UnsignedInt
+  evmChains     EvmChains @relation(fields: [evmChainId], references: [id])
+  address       String   @db.VarChar(42) @unique
+  tokenType     TokenTypes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  EvmChainNftCollections EvmChainNftCollections[]
+}
+
+model EvmChainNftCollections {
+  id              Int      @id @db.UnsignedInt @default(autoincrement())
+  evmChainTokenId Int     @db.UnsignedInt
+  evmChainTokens  EvmChainTokens @relation(fields: [evmChainTokenId], references: [id])
+  name            String   @db.VarChar(255)
+  symbol          String   @db.VarChar(255)
+  contractType    String   @db.VarChar(255)
+  syncedAt        DateTime
+  possibleSpam    Boolean
+  verifiedCollection Boolean
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

@@ -9,7 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.ts\""
   },
-  "license": "MIT",
+  "prisma": {
+    "seed": "ts-node prisma/seeder/index.ts"
+  },
   "dependencies": {
     "@moralisweb3/common-evm-utils": "^2.22.4",
     "@prisma/client": "5.0.0",

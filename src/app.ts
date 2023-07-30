@@ -4,7 +4,8 @@ import schedule from 'node-schedule'
 import metadataRoutes from './routes/metadata.route'
 import nftRoutes from './routes/nft.route'
 import projectRoutes from './routes/project.route'
-import { main as handlerSaveNftTokenAddresses } from './batch/jobs/saveNftTokenAddresses'
+import { main as handlerSaveNftTokenAddresses } from './batch/jobs/evmChain/saveNftTokenAddresses'
+import { main as handlerSaveNftCollection } from './batch/jobs/evmChain/saveNftCollection'
 
 const app = express()
 const port = 3001
@@ -18,7 +19,8 @@ app.use(express.json())
 // app.use('/api/project', projectRoutes)
 
 // Schedule
-schedule.scheduleJob('* */10 * * * *', handlerSaveNftTokenAddresses)
+// schedule.scheduleJob('*/10 * * * * *', handlerSaveNftTokenAddresses)
+schedule.scheduleJob('*/10 * * * * *', handlerSaveNftCollection)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
