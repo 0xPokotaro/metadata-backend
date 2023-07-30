@@ -6,7 +6,7 @@ environment-defaults:
     branch: null
     repository: null
 global:
-  application_name: Metadata Backend
+  application_name: Metadata
   default_ec2_keyname: null
   default_platform: Node.js 18 running on 64bit Amazon Linux 2
   default_region: ap-northeast-1
