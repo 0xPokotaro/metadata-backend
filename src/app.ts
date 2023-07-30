@@ -19,8 +19,8 @@ app.use(express.json())
 // app.use('/api/project', projectRoutes)
 
 // Schedule
-// schedule.scheduleJob('*/10 * * * * *', handlerSaveNftTokenAddresses)
-schedule.scheduleJob('*/10 * * * * *', handlerSaveNftCollection)
+schedule.scheduleJob('*/10 * * * * *', handlerSaveNftTokenAddresses)
+schedule.scheduleJob('*/20 * * * * *', handlerSaveNftCollection)
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

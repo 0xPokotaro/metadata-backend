@@ -59,7 +59,6 @@ export const main = async () => {
     const nftContractMetadata: any = await getNFTContractMetadata(
       evmChainToken.address
     )
-    console.log(nftContractMetadata)
 
     if (!nftContractMetadata) {
       throw new Error('No nftContractMetadata')

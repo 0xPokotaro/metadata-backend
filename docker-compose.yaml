@@ -10,7 +10,7 @@ services:
       - 3307:3306
     environment:
       MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: metameta
+      MYSQL_DATABASE: metadata
       MYSQL_USER: example
       MYSQL_PASSWORD: example
     volumes:

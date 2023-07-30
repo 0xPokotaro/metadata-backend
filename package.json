@@ -4,9 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "ts-node src/app.ts",
-    "batch:registerNFTs": "ts-node src/batch/registerNFTProjects.ts",
     "build": "tsc -p .",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write \"src/**/*.ts\""
   },
   "prisma": {

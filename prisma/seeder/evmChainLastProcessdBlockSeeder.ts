@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 const rows = [
   {
     evmChainId: 1,
-    latestBlockNo: 1,
+    latestBlockNo: 17807964,
     lastCursor: '',
   },
 ]
