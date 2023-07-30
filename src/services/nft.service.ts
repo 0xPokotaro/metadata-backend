@@ -12,8 +12,7 @@ export class NftService {
 
   constructor() {
     // Prisma
-    const prisma = new PrismaClient()
-    this.prisma = prisma
+    this.prisma = new PrismaClient()
 
     // Moralis
     this.chain = EvmChain.ETHEREUM
